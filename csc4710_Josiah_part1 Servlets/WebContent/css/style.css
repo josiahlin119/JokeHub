@@ -1,0 +1,60 @@
+html, body{
+	margin-left:50px; margin-right:15px; 
+	padding:0px; 
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+table {   
+	border-collapse:collapse;
+	border-bottom:1px solid #827d8e;
+	font-family: Tahoma,Verdana,Segoe,sans-serif;
+	width:72%;
+}
+ 
+th {
+	border-bottom:1px solid #65b498;
+	background:none repeat scroll 0 0 #8b1bd3;
+	padding:10px;
+	color: #FFFFFF;
+}
+
+tr {
+	border-top:1px solid gray;
+	text-align:center;	
+}
+ 
+tr:nth-child(even) {background: #ffdde3}
+tr:nth-child(odd) {background: #f6d7ba}	
+ 
+#wrapper {width: 100%; margin-top: 30px; }
+#header {width: 72%; background: #b3eeec; margin-top: 0px; padding:15px 0px 15px 0px;}
+#header h2 {width: 100%; margin:auto; color: #d9ffbe;}
+#container {width: 100%; margin:auto}
+#container h3 {color: #ef8ed9;}
+#container #content {margin-top: 20px;}
+
+.add-student-button {
+	border: 1px solid #666; 
+	border-radius: 5px; 
+	padding: 4px; 
+	font-size: 12px;
+	font-weight: bold;
+	width: 120px; 
+	padding: 5px 10px; 
+	
+	margin-bottom: 15px;
+	background: #efb1c7;
+}
+
+input, textarea,button
+{
+    color: #3743bd;
+    font-family: Nunito;
+    padding: 0;
+    margin: 0;
+    border: 1;
+    background-color: #f7ebf9;
+}
+
+
+#right { width: 20%; float: right}
