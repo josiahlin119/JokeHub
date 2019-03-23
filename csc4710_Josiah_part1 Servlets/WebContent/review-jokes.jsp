@@ -41,13 +41,17 @@ h3 {
 	</h3>
 </c:if>
 
-
-<c:if test="${isFavorite=='Yes'}">
-
-	<h3>
-		<a href="${deleteFavoriteJokeLink}"> Remove This Joke from Your List</a>
-	</h3>
-</c:if>
+								<c:if test="${isFavorite =='Yes'}">
+								<h3>
+									<a href="${deleteFavoriteJokeLink}"
+										>
+										Remove the Joke</a>
+										
+										</h3>
+								</c:if>
+								
+								
+						
 	<h3>
 		<a href="homepage.jsp">Back to Homepage</a>
 	</h3>
@@ -163,11 +167,6 @@ h3 {
 
 			</ul>
 		</c:forEach>
-
-
-
-
-
 
 	</table>
 

@@ -33,7 +33,7 @@
 					<th>First Name</th>
 					<th>Address</th>
 					<th>Email</th>
-					<th>Check Profile</th>
+				
 				</tr>
 
 				<c:forEach var="tempFriend" items="${Friend_List}">
@@ -67,10 +67,9 @@
 						
 						
 							<nav class="cl-effect-15">
-					<a href="${deleteFriendLink}"
-						onclick= "if (!(confirm('Are you sure?'))) return false">
+					<a href="${deleteFriendLink}">
 						Unfriend</a>
-						
+						</nav>
 						
 					</td>
 </tr>

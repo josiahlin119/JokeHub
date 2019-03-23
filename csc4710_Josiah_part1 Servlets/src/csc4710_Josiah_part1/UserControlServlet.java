@@ -76,6 +76,9 @@ public class UserControlServlet extends HttpServlet {
 				login(request, response);
 				System.out.println("This is Login");
 				break;
+			case"logout":
+				logout(request,response);
+				break;
 			case "initialize":
 				initialize(request, response);
 				break;
@@ -128,6 +131,18 @@ public class UserControlServlet extends HttpServlet {
 		}
 	}
 
+	private void logout(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		session.invalidate();
+		try {
+			response.sendRedirect("login-form.jsp");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	private void deleteFavoriteJoke(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			int jokeId = Integer.parseInt(request.getParameter("jokeId"));
@@ -138,21 +153,18 @@ public class UserControlServlet extends HttpServlet {
 			// is equal to following a friend since we dont need verification from the
 			// counterpart.
 			boolean jokeDeleted = userDAO.deleteFavorite(userId, jokeId);
-			System.out.print("Friend added ready to forward");
+			System.out.print("delete Jokes");
 			if (jokeDeleted) {
 				request.getSession().setAttribute("isFavorite", "No");
 			} else {
 				request.getSession().setAttribute("isFavorite", "Yes");
-
 			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
 		}
-
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void likeJokes(HttpServletRequest request, HttpServletResponse response) {
@@ -170,12 +182,10 @@ public class UserControlServlet extends HttpServlet {
 				request.getSession().setAttribute("isFavorite", "Yes");
 			} else {
 				request.getSession().setAttribute("isFavorite", "No");
-
 			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
 		}
-
 		catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -326,9 +336,9 @@ public class UserControlServlet extends HttpServlet {
 		String comment = request.getParameter("comment");
 		int jokeId = Integer.parseInt(request.getParameter("jokeId"));
 		int reviewerId = (int) request.getSession().getAttribute("id");
-
 		userDAO.insertReview(jokeId, reviewerId, rating, comment);
-
+		loadJoke(request,response);
+		
 	}
 
 	private void retrieveJoke_tag(HttpServletRequest request, HttpServletResponse response)

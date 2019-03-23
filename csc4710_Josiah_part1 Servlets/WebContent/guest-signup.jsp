@@ -25,10 +25,10 @@
 					
 				}
 				 -->
-				%>
+		
 	<div align="center">
 		<div id="wrapper">
-			<div id="header">
+			<div id="header">                               
 				<h2>Sign up form</h2>
 
 				<div id="container">
@@ -36,20 +36,20 @@
 					<div id="content">
 				
 						<form action="UserControlServlet" method="post">
-							<input type="hidden" name="action" value="new" />
-							 Your First Name: <input type= "text" name = "firstName"/> <br/><br/>
-							Your LastName : <input type ="text" name = "lastName"/> <br/><br/>
-							Your Address: <input type="text" name ="address"/> <br/><br/>
+							<input type="hidden" name="action" value="new" required/>
+							 Your First Name: <input type= "text" name = "firstName"required/> <br/><br/>
+							Your LastName : <input type ="text" name = "lastName" required/> <br/><br/>
+							Your Address: <input type="text" name ="address" required/> <br/><br/>
 							Gender: <input type ="radio" name = "gender" value ="male"/> male
 									<input type = "radio" name ="gender" value ="female"/> female<br/><br/>
-							Your birthday: <input type="date" name ="birthday"/> <br/><br/>
+							Your birthday: <input type="date" name ="birthday"required/> <br/><br/>
 							
 							Please provide your email:
 								<input
-								type="text" name="account" /> <br/> <br/>
+								type="text" name="account" required/> <br/> <br/>
 								
 								 Create a safe password <input
-								type="password" name="password" />
+								type="password" name="password" required/>
 								<!---->
 								 <br /> <br />
 								<input type="submit" value="Sign up" class="save" /> <br />
@@ -58,9 +58,11 @@
 						<div style="clear: both;"></div>
 						<p>
 						<h3>
+						
+						
 							<c:if test="${user !=null }">You already have an account, Go to sign in 
 						
-						<input type="button" value="Sign In"
+						<input type="button" value="Sign In" 
 									onclick="window.location.href='login-form.jsp';return false;"
 									class="add-student-button" />
 

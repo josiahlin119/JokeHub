@@ -23,8 +23,8 @@
 					
 						<form action="UserControlServlet" method="post">
 								<input type = "hidden" name = "action" value = "login"/>
-							user account: <input type="text" name="account" /> <br /> <br />
-							your password: <input type="password" name="password" /> <br /> <br />
+							user account: <input type="text" name="account" required /> <br /> <br />
+							your password: <input type="password" name="password" required /> <br /> <br />
 							<!--  
 <select name = "collegeYear">
 <option>Fresh Man </option>

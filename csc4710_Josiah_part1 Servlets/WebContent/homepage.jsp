@@ -66,11 +66,15 @@
 		<c:param name="action" value="loadJokes" />
 	</c:url>
 
-
+	<c:url var="logoutLink" value ="UserControlServlet">
+	
+	<c:param name="action" value = "logout"/>
+	
+	</c:url>
 
 	<nav class="cl-effect-13">
 		<div id="right">
-			<a href="logout.jsp"> Log Out</a>
+			<a href= "${logoutLink }"> Log Out</a>
 		</div>
 	</nav>
 

@@ -1,7 +1,5 @@
 
 
-
-
 <%@ page import="java.util.*, csc4710_Josiah_part1.*"%>
 
 
@@ -16,14 +14,25 @@
 <link type="text/css" rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href='css/searchBar.css'>
 <link rel="stylesheet" href='css/component.css'>
+
+
+<style>
+.content {
+  max-width: 500px;
+  margin: auto;
+}
+</style>
 <style>
 a {
-	color: #28a2ee;
+color: #28a2ee;
 } /* CSS link color */
 </style>
 </head>
+
+
 <body>
 
+<center>
 
 	<%
 		Users theUser = (Users) request.getSession().getAttribute("theUser");
@@ -56,16 +65,17 @@ friend list, i give the user an 'unfriend' button, otherwise 'add friend'. I wil
 		if (isFriend == "Yes") {
 			out.print("is your friend");
 	%>
-
+<nav class="cl-effect-4">
 	<a href="${deleteFriendLink}"> Unfriend</a>
-
+	
+</nav>
 	<%
 		} else {
 			out.print(" is not your friend");
 	%>
+	<nav class="cl-effect-4">
 	<a href="${addFriendLink}"> Add as a friend</a>
-
-
+</nav>
 	<%
 		}
 	%>
@@ -77,17 +87,22 @@ friend list, i give the user an 'unfriend' button, otherwise 'add friend'. I wil
 		out.print("Address: " + theUser.getAddress() + "<br/> <br/>");
 	%>
 
+
 	<c:if test=" ${isFriend== 'Yes'}">
 
 	</c:if>
+
 
 	<c:if test=" ${isFriend=='No'}">
 		<a href="${addFriendLink}"> Add This Friend</a>
 	</c:if>
 
-	
+<nav class="cl-effect-4">
 	<a href="homepage.jsp">  Home</a>
 
+</nav>
+</center>
+ 
 </body>
 
 </html>
