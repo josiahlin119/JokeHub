@@ -63,9 +63,9 @@
 						<td>${tempJoke.description }</td>
 						<td>${tempJoke.content}</td>
 
-						<td><a href="${tempLink}">review</a></td>
+						<td><nav class="cl-effect-17"><a href="${tempLink}">review</a></nav></td>
 						<!-- I need to verify whether this author is current user's friend or not then forward his information to the "see-user-profile.jsp -->
-						<td><a href="${verifyFriendLink}"> See Author' Profile</a></td>
+						<td><nav class="cl-effect-17"><a href="${verifyFriendLink}"> See Author' Profile</a></nav></td>
 
 
 						<td>

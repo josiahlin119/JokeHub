@@ -52,6 +52,7 @@
 					<!--  set up a link to delete a friend -->
 					<c:url var="deleteFriendLink" value="UserControlServlet">
 						<c:param name="action" value="deleteFriend" />
+						
 						<c:param name="authorId" value="${tempFriend.id}" />
 					</c:url>
 	
@@ -81,10 +82,11 @@
 		</div>
 
 	</div>
-	
+	<nav class = "cl-effect-17" > 
 	<form>
 		<input type="button" value="Go back!" onclick="history.back()">
 	</form>
+	</nav>
 </body>
 
 

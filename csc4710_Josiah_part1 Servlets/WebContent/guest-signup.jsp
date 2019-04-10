@@ -67,8 +67,16 @@
 									class="add-student-button" />
 
 							</c:if>
+							
+							
 						</h3>
 
+
+	<input type="button" value="Back to Sign" 
+									onclick="window.location.href='login-form.jsp';return false;"
+									class="add-student-button" />
+
+						
 
 					</div>
 				</div>

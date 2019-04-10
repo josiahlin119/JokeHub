@@ -242,11 +242,7 @@ public class UserDAO extends HttpServlet {
 			String follow = "create table follow(" + "follower_id int(10) not null," + "followee_id int(10) not null,"
 					+ "create_at timestamp default now()," + "foreign key (follower_id) references users(id),"
 					+ "foreign key(followee_id) references users(id)," + "primary key(follower_id, followee_id)" + ");";
-			String trigger1 = "create  trigger  noMoreThanFivePerDay before insert on Jokes " + "for each row "
-					+ "     begin "
-					+ "     if (select COUNT(*) from Jokes where author_ID = NEW.ID and NEW.create_at = curdate()) >= 5 then "
-					+ "        SIGNAL SQLSTATE '45000'; " + "     end if; " + "    end; "; // do not use delimiter on
-																							// both ends;
+		
 			String InsertTags = "insert into tags (tag_name) values('Tantalizing'),('fantastic');";
 			String InsertJoke_tags = "Insert into joke_tags(joke_id, tag_id) values(1,1),(1,2), (4,2),(2,2);";
 
@@ -254,6 +250,8 @@ public class UserDAO extends HttpServlet {
 					+ "('jjj@gmail.com','pass1234','Yosaf','GG','27233','1997-01-10'),('111@gmail.com','pass1234','Michael','Sun','23333','1997-01-11'),('iiij@gmail.com','pass1234','Muma','Grant','2222233','1997-01-12');";
 			String insertAdmin = "INSERT INTO administrator(account,password,address)values('Josiah','1119','2333');";
 			String insertJokes = "insert into Jokes (title,content,Description,author_ID,create_at) values ('LLddL','ddd','eee',1,curdate()),('LddssssLL','ddd','eee',1,curdate()),('LLdsssdL','ddd','eee',1,curdate()),('LssssLL','ddd','eee',1,curdate()),('LfdsfsdLL','ddd','eee',1,curdate()),('LfdddsfsdLL','dsdd','eese',1,curdate())";
+			
+			
 			/*
 			 * I take three steps 1. delete all tables if they exist 2. recreate those
 			 * tables with specified attributes 3. I insert sample tuples which needed to be
@@ -267,7 +265,7 @@ public class UserDAO extends HttpServlet {
 				// using listAllUsers() later.
 				// ps.close();
 			}
-			statement.execute(trigger1);
+			
 			statement.close();
 			disconnect();
 		} catch (SQLException e) {
@@ -391,37 +389,48 @@ public class UserDAO extends HttpServlet {
 		return myFavoriteFriends;
 	}
 
-	public int viewOneId(String sql) {
+	public ArrayList<Integer> viewIdsOftagsInserted(String[] tagsAfterSplit) {
 		try {
-			connect_func();
-			int id = 0;
-			sm = connect.createStatement();
-			rs = sm.executeQuery(sql);
-			if (rs.next()) {
-				id = rs.getInt("id");
-				return id;
-			}
-			System.out.print("the id of" + sql + "is  ------------" + id);
+			ArrayList<Integer> theIdsOfTags = new ArrayList();
 
-			disconnect();
-			sm.close();
-			rs.close();
+			connect_func();
+			ResultSet rs;
+			int id = 0;
+			String sqlOfRetrieveTags = "select * from tags where tag_name = ? ";
+			for (String tag : tagsAfterSplit) {
+
+				PreparedStatement ps = connect.prepareStatement(sqlOfRetrieveTags);
+				ps.setString(1, tag);
+				rs = ps.executeQuery();
+
+				if (rs.next()) {
+					id = rs.getInt("id");
+					theIdsOfTags.add(id); // add the id of the tag retrieved by tag name and put into the integer
+											// arrayList.
+				}
+
+			}
+			System.out.print("the id of" + tagsAfterSplit + "is  ------------" + id);
+
+			return theIdsOfTags;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return 404;
+		return null;
 
 	}// return a int according to the sql command.
 
-	public void insertTag(String tag_name) {
+	public void insertTag(String[] tagsAfterSplit) {
 		String insertTag = "INSERT INTO tags (tag_name) VALUES(?);";
 		try {
 			connect_func();
-			ps = connect.prepareStatement(insertTag);
-			ps.setString(1, tag_name);
-			ps.executeUpdate();
-			System.out.print("insert tag successfullly");
+			for (String tag : tagsAfterSplit) {
+				PreparedStatement ps = connect.prepareStatement(insertTag);
+				ps.setString(1, tag);
+				ps.executeUpdate();
+				System.out.print("insert tag successfullly");
+			}
 			disconnect();
 			ps.close();
 		} catch (SQLException e) {
@@ -430,35 +439,34 @@ public class UserDAO extends HttpServlet {
 		}
 	}
 
-	public void pairJokeAndTag(int jokeId, int tagId) {
+	public void pairJokeAndTag(int idOfJokeInserted, ArrayList<Integer> idsOfTagInserted) {
 		try {
 			connect_func();
+
 			String pair = "insert into joke_tags (joke_id, tag_id) values(?,?);";
-			ps = connect.prepareStatement(pair);
-			ps.setInt(1, jokeId);
-			ps.setInt(2, tagId);
-			ps.executeUpdate();
-			System.out.print("pair joke and tag successfullly");
-			disconnect();
-			ps.close();
-
-		}
-
-		catch (SQLException e) {
+			
+			for (int tagId : idsOfTagInserted) {
+				PreparedStatement ps = connect.prepareStatement(pair);
+				ps.setInt(1, idOfJokeInserted);
+				ps.setInt(2, tagId);
+				ps.executeUpdate(); // pair the arrayList of tags with this joke through ids one by one.
+				System.out.print(tagId + "pair joke and tag successfullly");
+			}
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
-	public void insertJokes(int authorId, String title, String description, String content, String tag)
+	public void insertJokes(int authorId, String title, String description, String content, String[] tagsAfterSplit)
 			throws SQLException {
 		connect_func();
 
-		String InsertUsers = "insert into Jokes(create_at,title,content,description,author_ID) values (?,?,?,?,?)";
+		String InsertJoke = "insert into Jokes(create_at,title,content,description,author_ID) values (?,?,?,?,?)";
 
 		/* Step 1 insert all joke information besides tag */
-		ps = connect.prepareStatement(InsertUsers);
+		ps = connect.prepareStatement(InsertJoke);
 		java.util.Date today = new java.util.Date();
 		java.sql.Date currentDate = convertJavaDateToSQLdate(today);
 		ps.setDate(1, currentDate);
@@ -470,21 +478,49 @@ public class UserDAO extends HttpServlet {
 		ps.executeUpdate();
 		disconnect();
 		ps.close();
+		// Step 2 get id of joke we just inserted.
+		
+		int idOfJokeInserted = viewJokeId(title);
+		
+		System.out.print("The id of Joke just inserted" + idOfJokeInserted);
+		/* Step 3 insert tag */
+		insertTag(tagsAfterSplit); // insert an array of tags into database. Our next step is to get their auto
+									// incremented id and
+		// pair those id with the joke id just created.
 
-		/* Step 2 insert tag */
-		String lastJokeId = "select id from jokes where title = '" + title + "';";
-		System.out.print(lastJokeId);
-		// get id of joke we just inserted.
-		int idOfJokeInserted = viewOneId(lastJokeId);
-		System.out.print("insert joke successfully  ffffff");
-		System.out.println("the id of joke is ................." + idOfJokeInserted);
-		insertTag(tag);
-		String lastTagId = "select id from tags where tag_name = '" + tag + "';";
-		// get id of tag we just inserted.
-		int idOfTagInserted = viewOneId(lastTagId);
-		System.out.println("the id of tag is ................." + idOfTagInserted);
+		// get all ids of tags using tag array we just inserted.
+		ArrayList<Integer> idsOfTagInserted = viewIdsOftagsInserted(tagsAfterSplit);
+		System.out.println("the size of tags is ................." + idsOfTagInserted.size());
 		// pair this two ids in joke_tags.
-		pairJokeAndTag(idOfJokeInserted, idOfTagInserted);
+		pairJokeAndTag(idOfJokeInserted, idsOfTagInserted);
+	}
+
+	private int viewJokeId(String title) {
+		try {
+			connect_func();
+		String sqlRetrieveJokeId = "select * from jokes where title = ?;";
+		
+		System.out.print("The title of the joke-----------" + title);
+		
+			PreparedStatement ps = connect.prepareStatement(sqlRetrieveJokeId);
+			ps.setString(1, title);
+			ResultSet rs = ps.executeQuery();
+			java.sql.Date create_at;
+			while(rs.next()) {
+				int jokeId = rs.getInt("id");
+				create_at = rs.getDate("create_at");
+				System.out.print("The date" + create_at);
+				System.out.print("The joke id of the joke we just inserted **************" + jokeId);
+				return jokeId;
+			}
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 
 	public Jokes retrieveJoke_id(int jokeId) throws SQLException {
@@ -689,7 +725,7 @@ public class UserDAO extends HttpServlet {
 	 */
 
 	public void insertReview(int jokeId, int reviewerId, String rating, String comment) throws SQLException {
-		try {
+		
 			connect_func();
 
 			String InsertReview = "insert into review(User_id,Joke_id,score,comment,create_at) values(?,?,?,?,?);";
@@ -704,26 +740,39 @@ public class UserDAO extends HttpServlet {
 			ps.setDate(5, currentDate);
 			ps.executeUpdate();
 
-		}
+		
 
-		catch (Exception e) {
-			e.printStackTrace();
-			System.out.print("whathwahthwaht    insert reivew error");
-		} finally {
+	 
 			rs.close();
 			disconnect();
 			ps.close();
-		}
+		
 
 	}
 
+public void updateReview(int currentUserId, int jokeId, String rating,String comment) throws SQLException {
+		connect_func();
+	String updateReview ="update Review set  comment = ? , score = ? where user_id =? AND joke_id = ?;";
+
+	/* Step 1 insert all joke information besides tag */
+	ps = connect.prepareStatement(updateReview);
+	ps.setString(1, comment);
+	ps.setString(2, rating);
+	ps.setInt(3, currentUserId);
+	ps.setInt(4, jokeId);
+	ps.executeUpdate();
+	
+	}
+	
+	
+	
 	public ArrayList<Review> retrieveReviews_jokeId(int jokeId) throws SQLException {
 		try {
 
 			ArrayList<Review> allReviewsOfOneJoke = new ArrayList<>();
-
+			System.out.print("retrieveReviews_jokeId");
 			connect_func();
-			String getReviews = "select U.firstName,U.lastname, R.create_at, R.comment,R.score from users U, review R where U.id = R.user_id AND joke_id = ?;";
+			String getReviews = "select U.firstName,U.lastname, R.create_at, R.comment,R.score,R.user_id from users U, review R where U.id = R.user_id AND joke_id = ?;";
 			ps = connect.prepareStatement(getReviews);
 			ps.setInt(1, jokeId);
 			ResultSet myRs = ps.executeQuery();
@@ -735,7 +784,8 @@ public class UserDAO extends HttpServlet {
 				String comment = myRs.getString("comment");
 				String rating = myRs.getString("score");
 				String reviewerName = firstName + " " + lastName;
-				Review theReview = new Review(create_at, reviewerName, comment, rating, jokeId);
+				int commenter_id = myRs.getInt("user_id");   //this is important to find a modfiable review   
+				Review theReview = new Review(create_at, reviewerName, comment, rating, jokeId,commenter_id);
 
 				allReviewsOfOneJoke.add(theReview);
 
@@ -1038,18 +1088,18 @@ public class UserDAO extends HttpServlet {
 			ps = connect.prepareStatement(unlikeJoke);
 			ps.setInt(1, userId);
 			ps.setInt(2, jokeId);
-		int result =	ps.executeUpdate();
-		
-		if(result ==1) {
-			System.out.print("FavoriteJoke successfully deleted");
-			return true;
-			
-		}
-		
-		else{
-			System.out.print("Failed to delete joke");
-			return false;
-		}
+			int result = ps.executeUpdate();
+
+			if (result == 1) {
+				System.out.print("FavoriteJoke successfully deleted");
+				return true;
+
+			}
+
+			else {
+				System.out.print("Failed to delete joke");
+				return false;
+			}
 		} catch (Exception e) {
 			System.out.print("Delete Joke error !!!!");
 			e.printStackTrace();
@@ -1066,7 +1116,11 @@ public class UserDAO extends HttpServlet {
 		}
 		return false;
 
-}
+	}
+
+	
+
+	
 }
 
 //select * from likes where user_id = 1 AND joke_id =1;

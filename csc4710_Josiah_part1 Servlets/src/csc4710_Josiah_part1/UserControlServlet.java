@@ -120,7 +120,13 @@ public class UserControlServlet extends HttpServlet {
 			case "loadJokes":
 				loadJokes(request, response);
 				break;
-
+			case "loadCurrentUserReview":
+				retrieveReviewByCurrentUser(request,response);
+			break;
+			case "updateReview":
+				updateCurrentUserReview(request,response);
+				break;
+			
 			default:
 				out.println("404");
 			}
@@ -131,6 +137,7 @@ public class UserControlServlet extends HttpServlet {
 		}
 	}
 
+	
 	private void logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		session.invalidate();
@@ -199,7 +206,6 @@ public class UserControlServlet extends HttpServlet {
 
 			ArrayList<Jokes> allJokes = userDAO.getJokes_id(userId);
 			request.setAttribute("Joke_List", allJokes);
-
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/favoriteJoke.jsp");
 			dispatcher.forward(request, response);
 		} catch (ServletException | IOException e) {
@@ -296,7 +302,8 @@ public class UserControlServlet extends HttpServlet {
 			Jokes theJoke = userDAO.retrieveJoke_id(jokeId);
 			request.getSession().setAttribute("joke", theJoke);
 			/* Step 2 retrieve all the reviews about this joke and load */
-			ArrayList<Review> allReviewOfThisJoke = loadReviews(jokeId);
+			
+			ArrayList<Review> allReviewOfThisJoke = loadReviews(jokeId);     //  The review has userId information  
 			request.getSession().setAttribute("reviews", allReviewOfThisJoke);
 
 			// Step 3 after this, i need to check whether the joke is in the user's favorite
@@ -318,10 +325,67 @@ public class UserControlServlet extends HttpServlet {
 
 	}
 
+
+	private void updateCurrentUserReview(HttpServletRequest request, HttpServletResponse response) {
+	
+		 int currentUserId = (int) request.getSession().getAttribute("id");
+		 int jokeId = Integer.parseInt(request.getParameter("jokeId"));
+		 String rating = request.getParameter("rating");
+			String comment = request.getParameter("comment");
+		 try {
+			userDAO.updateReview(currentUserId,jokeId,rating, comment);
+			
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		 //call load joke to reload the review joke page with updated review
+		 loadJoke(request,response);
+		 
+		 
+	}
+
+	private void retrieveReviewByCurrentUser(HttpServletRequest request, HttpServletResponse response) {
+	 int currentUserId = (int) request.getSession().getAttribute("id");
+	 int jokeId = Integer.parseInt(request.getParameter("jokeId"));
+	 
+	 System.out.print("currentUser REview 1111111111111111111");
+	 ArrayList<Review> allReviewsOfThisJoke = loadReviews(jokeId);
+	 //Find current user's single review
+	 Review currentUserReview;
+	 
+	 for(Review r: allReviewsOfThisJoke) {
+		 if(r.getCommenter_id() == currentUserId) {
+			 currentUserReview = r;
+			 request.setAttribute("currentUserReview", currentUserReview);
+			 System.out.print("currentUser REview 22222222222222222");
+			 RequestDispatcher dispatcher = request.getRequestDispatcher("ModifyReview.jsp");
+			
+			 try {
+				dispatcher.forward(request, response);
+			} catch (ServletException e) {
+			
+				e.printStackTrace();
+			} catch (IOException e) {
+			
+				e.printStackTrace();
+			}
+			 
+		 }
+	 }
+	 
+	
+	 
+	 
+		
+	}
+
 	private ArrayList<Review> loadReviews(int jokeId) {
 		ArrayList<Review> allReviewsOfThisJoke = new ArrayList<>();
 		try {
-			allReviewsOfThisJoke = userDAO.retrieveReviews_jokeId(jokeId);
+			allReviewsOfThisJoke = userDAO.retrieveReviews_jokeId(jokeId);   // i need to provide a modification button for the current user 
+			// to modify his or her previous review.  
+			
 
 		} catch (SQLException e) {
 
@@ -330,15 +394,31 @@ public class UserControlServlet extends HttpServlet {
 		return allReviewsOfThisJoke;
 
 	}
+	
 
-	private void reviewJokes(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+	private void reviewJokes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
+		try {
 		String rating = request.getParameter("rating");
 		String comment = request.getParameter("comment");
 		int jokeId = Integer.parseInt(request.getParameter("jokeId"));
 		int reviewerId = (int) request.getSession().getAttribute("id");
 		userDAO.insertReview(jokeId, reviewerId, rating, comment);
 		loadJoke(request,response);
-		
+		}
+		catch(SQLException e) {
+			String warning = e.getMessage();
+		  
+			System.out.print("review error:  " + warning + e.getErrorCode());
+			if(warning.equalsIgnoreCase("Cannot post more than five jokes per day") ) {
+			request.setAttribute("warning2", warning);
+			}
+			else if(warning.equalsIgnoreCase("You cannot write more than one review to the same joke")){
+				request.setAttribute("warning3", warning);
+			}
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
+			dispatcher.forward(request, response);
+		}
 	}
 
 	private void retrieveJoke_tag(HttpServletRequest request, HttpServletResponse response)
@@ -353,7 +433,7 @@ public class UserControlServlet extends HttpServlet {
 	}
 
 	private void postNewJokes(HttpServletRequest request, HttpServletResponse response)
-			throws SQLException, IOException {
+			throws SQLException, IOException, ServletException {
 
 		try {
 			int authorId = (int) request.getSession().getAttribute("id");
@@ -365,9 +445,10 @@ public class UserControlServlet extends HttpServlet {
 																// //
 																// controlservlet.
 			String tags = request.getParameter("tag");
-
+			
+			String [] tagsAfterSplit  = tags.split("#");
 			// Step 1: Insert joke information into the database;
-			userDAO.insertJokes(authorId, title, description, content, tags);
+			userDAO.insertJokes(authorId, title, description, content, tagsAfterSplit);
 			// Step 2: Present the joke on the homepage with date specified.
 			System.out.print("insert Succesffully");
 			Jokes theJoke = userDAO.retrieveJoke_title(title);
@@ -377,7 +458,17 @@ public class UserControlServlet extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/homepage.jsp");
 			dispatcher.forward(request, response);
 
-		} catch (Exception e) {
+		} 
+		catch(SQLException e) {
+			String warning = e.getSQLState();
+			System.out.println(warning);
+			request.setAttribute("warning", warning);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/homepage.jsp");
+			dispatcher.forward(request, response);
+		}
+		
+		
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

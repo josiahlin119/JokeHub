@@ -1,7 +1,7 @@
 
 <%@ page import="java.util.*, csc4710_Josiah_part1.*"%>
 
-
+<jsp:include page="staticDirective.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
@@ -22,12 +22,7 @@ a {
 
 <body>
 
-	<nav class="cl-effect-16">
 
-		<a href="homepage.jsp"> Go back to your homepage</a> <a
-			href="post-jokes.jsp"> Go post your own jokes</a>
-
-	</nav>
 
 
 	<div id="wrapper">
@@ -62,7 +57,7 @@ a {
 					<c:url var="verifyFriendLink" value="UserControlServlet">
 						<c:param name="action" value="verifyFriend" />
 						<c:param name="authorId" value="${tempJoke.authorId}" />
-					</c:url>
+</c:url>
 
 
 
@@ -72,9 +67,9 @@ a {
 						<td>${tempJoke.description }</td>
 						<td>${tempJoke.content}</td>
 										
-						<td><a href="${tempLink}">Review</a></td>
+					<td> 	<nav class="cl-effect-21">	<a href="${tempLink}">Review</a>  </nav></td>
 						<!-- I need to verify whether this author is current user's friend or not then forward his information to the "see-user-profile.jsp -->
-						<td><a href="${verifyFriendLink}"> See Author' Profile</a></td>
+						<td> <nav class ="cl-effect-21"> <a href="${verifyFriendLink}"> See Author' Profile</a> </nav></td>
 
 
 

@@ -1,6 +1,6 @@
 <%@ page import="java.util.*, csc4710_Josiah_part1.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<jsp:include page="staticDirective.jsp" />
 
 <!DOCTYPE html>
 <html>
@@ -18,13 +18,6 @@
 <link rel="stylesheet" href='css/component.css'>
 </head>
 <body>
-
-	<%
-		String account = request.getSession().getAttribute("firstName").toString();
-		out.println("Hello" + account);
-		out.println(request.getSession().getId());
-	%>
-
 
 	<!-- 
 	<form action="UserControlServlet" method="post">
@@ -72,26 +65,7 @@
 	
 	</c:url>
 
-	<nav class="cl-effect-13">
-		<div id="right">
-			<a href= "${logoutLink }"> Log Out</a>
-		</div>
-	</nav>
-
-
-
-	<nav class="cl-effect-1">
-
-		<a href="post-jokes.jsp"> Go post your own jokes</a> 
-		<a
-			href="${loadFriendsLink}">Friend List</a> 
-			
-			<a href="${loadJokesLink}">
-			View Your Favoirte Jokes</a>
-
-
-	</nav>
-
+	
 	<br />
 	<br />
 	<br />
@@ -100,6 +74,16 @@
 		<font size="6" color="red">You have successfully posted your
 			joke</font>
 	</c:if>
+	
+	<c:if test="${warning !=null }">
+	
+	<font size="6" color="red"> 
+			Warning! You cannot post more than five Jokes per day</font>
+	</c:if>
+
+
+	
+	
 
 
 

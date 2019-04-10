@@ -8,6 +8,7 @@ private	int id;
 private String reviewer;
 private String comment;
 private String rating;
+private int commenter_id;
 
 private int jokeId;
 
@@ -29,6 +30,18 @@ public String getRating() {
 
 
 
+public int getCommenter_id() {
+	return commenter_id;
+}
+
+
+
+public void setCommenter_id(int commenter_id) {
+	this.commenter_id = commenter_id;
+}
+
+
+
 public void setRating(String rating) {
 	this.rating = rating;
 }
@@ -41,13 +54,14 @@ public Date getCreate_at() {
 
 
  
-public Review(Date create_at, String reviewer, String comment,String rating, int jokeId) {
+public Review(Date create_at, String reviewer, String comment,String rating, int jokeId,int commenter_id) {
 	super();
 	this.create_at = create_at;
 	this.reviewer = reviewer;
 	this.jokeId = jokeId;
 	this.comment = comment;
 	this.rating = rating;
+	this.commenter_id = commenter_id;
 }
 
 

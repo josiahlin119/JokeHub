@@ -11,6 +11,9 @@
 <link rel="stylesheet" href='css/component.css'>
 
 <style>
+
+a {text-decoration: none; }
+
 h3 {
 	display: inline-block;
 }
@@ -88,7 +91,9 @@ h3 {
 			<h2>Joke World</h2>
 		</div>
 	</div>
-
+     
+     
+     
 
 	<form action="UserControlServlet" method="GET">
 
@@ -148,24 +153,49 @@ h3 {
 
 
 	<table>
-
-
+	
+      <c:if test="${warning2 !=null }">
+<font size="3" color="blue"> 
+			Warning! You cannot review more than five Jokes per day</font>
+	</c:if>
+	
+	     
+		<c:if test="${warning3 !=null }">
+	
+	<font size="3" color="blue"> 
+			 You have already reviewed this joke</font>
+	</c:if>
 
 
 		<div id="reviewSection">
 			<h3>Reviews in the past</h3>
 		</div>
+		
+			<c:url var="loadReview" value="UserControlServlet">
+						<c:param name="action" value="loadCurrentUserReview" />
+						<c:param name="jokeId" value="${joke.id}" />
+					</c:url>
 
 		<c:forEach var="tempReview" items="${reviews}">
-
-
+			
 			<ul style="list-style-type: circle;">
 				<li>Date: ${tempReview.create_at}</li>
 				<li>Reviewer: ${tempReview.reviewer }</li>
-				<li>Rating: ${tempReview.rating }</li>
+				<li>Rating: ${tempReview.rating }  
+				<c:if test="${tempReview.commenter_id == id }">  
+				
+				<a href ="${loadReview}" > <font size="3" color="#1c87c9"> &nbsp  &nbsp  &nbsp  Edit Your Comment</font> </a>
+			
+				</c:if>
+			
 				<li>Comment: ${tempReview.comment }</li>
-
+		
+				
+				
 			</ul>
+			
+			
+			
 		</c:forEach>
 
 	</table>
