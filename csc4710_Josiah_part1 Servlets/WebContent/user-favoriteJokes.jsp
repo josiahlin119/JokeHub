@@ -1,5 +1,9 @@
 <%@ page import="java.util.*"%>
+<jsp:include page="staticDirective.jsp" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+<!DOCTYPE html>
 <html>
 
 <body>

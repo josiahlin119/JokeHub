@@ -1,7 +1,7 @@
 
 
 <%@ page import="java.util.*, csc4710_Josiah_part1.*"%>
-<jsp:include page="staticDirective.jsp" />
+<jsp:include page="staticDesignForInput.jsp" />
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 

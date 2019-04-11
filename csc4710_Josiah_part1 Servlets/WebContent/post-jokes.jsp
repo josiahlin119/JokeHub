@@ -1,3 +1,6 @@
+
+<jsp:include page="staticDesignForInput.jsp" />
+
 <!DOCTYPE html>
 <html>
 
@@ -9,12 +12,6 @@
 <link rel = "stylesheet" href ='css/component.css'>
 
 </head>
-			<nav class="cl-effect-1">	
-			
-			
-				<a href="homepage.jsp"> Go back to your homepage</a>
-			
-</nav>
 
 
 <body>

@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import="java.util.*, csc4710_Josiah_part1.*"%>
+<jsp:include page="staticDesignForInput.jsp" />
 <!DOCTYPE html>
 <html>
 
@@ -14,7 +15,7 @@
 
 a {text-decoration: none; }
 
-h3 {
+h4 {
 	display: inline-block;
 }
 </style>
@@ -37,37 +38,6 @@ h3 {
 
 
 
-<nav class="cl-effect-4">
-<c:if test="${isFavorite=='No'}"> 
-	<h3>
-		<a href="${addFavoriteJokeLink}"> Add This Joke to Your List</a>
-	</h3>
-</c:if>
-
-								<c:if test="${isFavorite =='Yes'}">
-								<h3>
-									<a href="${deleteFavoriteJokeLink}"
-										>
-										Remove the Joke</a>
-										
-										</h3>
-								</c:if>
-								
-								
-						
-	<h3>
-		<a href="homepage.jsp">Back to Homepage</a>
-	</h3>
-
-
-
-
-
-	
-
-
-
-</nav>
 
 
 
@@ -92,7 +62,8 @@ h3 {
 		</div>
 	</div>
      
-     
+ 
+								
      
 
 	<form action="UserControlServlet" method="GET">
@@ -116,28 +87,55 @@ h3 {
 					<td>${joke.authorName}</td>
 					<td>${joke.description }</td>
 					<td>${joke.content}</td>
+					<td>     <c:if test="${isFavorite=='No'}"> 
+	<h3>
+		<a href="${addFavoriteJokeLink}" style= "color:#FF1493 " class = "button1"> Like</a>
+	</h3>
+</c:if>
 
+								<c:if test="${isFavorite =='Yes'}">
+								<h3>
+									<a href="${deleteFavoriteJokeLink}" style= "color:#FF1493" class ="button1"
+										>
+										Unlike</a>
+										
+										</h3>
+								</c:if></td>
 				</tr>
 
-
+				
 
 				<tr>
+				
+		
+				
+				</tr>
 			</tbody>
 		</table>
 
 		<!-- loop though all the reviews exist -->
 		<div id="WriteReview">
 			<h3>Write Your Own Review</h3>
+			
+				
+
+						
+
 		</div>
-		Give a raiting <select name="rating">
+		Give a Score <select name="rating">
 			<option>Excellent</option>
 			<option>Good</option>
 			<option>Fair</option>
 			<option>Poor</option>
+	
 
-
-
-		</select> <br /> <br /> Leave Your Comment</label>
+		</select> 
+	
+		
+		<br />  Leave Your Comment</label>
+		
+		
+		
 		<tr>
 			</td>
 			<input type="text" name="comment" />
@@ -184,7 +182,7 @@ h3 {
 				<li>Rating: ${tempReview.rating }  
 				<c:if test="${tempReview.commenter_id == id }">  
 				
-				<a href ="${loadReview}" > <font size="3" color="#1c87c9"> &nbsp  &nbsp  &nbsp  Edit Your Comment</font> </a>
+				<a href ="${loadReview}" > <font size="3" color="#4169E1"> &nbsp  &nbsp  &nbsp  Edit Your Comment</font> </a>
 			
 				</c:if>
 			

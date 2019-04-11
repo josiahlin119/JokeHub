@@ -11,7 +11,7 @@
 <link type="text/css" rel="stylesheet" href="css/style.css">
 <link rel='stylesheet'
 	href='https://fonts.googleapis.com/css?family=Nunito'>
-<link rel="stylesheet" href='css/searchBar.css'>
+
 <link rel="stylesheet" href='css/component.css'>
 </head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +23,7 @@ body {
 
 .glow {
   font-size: 50px;
-  color:#FFD700;
+  color: #fff;
   text-align: center;
   -webkit-animation: glow 1s ease-in-out infinite alternate;
   -moz-animation: glow 1s ease-in-out infinite alternate;
@@ -32,11 +32,11 @@ body {
 
 @-webkit-keyframes glow {
   from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #40E0D0, 0 0 40px #40E0D0, 0 0 50px #40E0D0, 0 0 60px #40E0D0, 0 0 80px #40E0D0;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
   }
   
   to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #00CED1, 0 0 40px #00CED1, 0 0 50px #00CED1, 0 0 60px #00CED1, 0 0 70px #00CED1, 0 0 90px #00CED1;
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
   }
 }
 </style>
@@ -60,7 +60,7 @@ body {
 
 
 
-<h3 class="glow">Joke World </h2>
+<h3 class="glow">Joke World </h3>
 <body>
 
 	<c:url var="loadFriendsLink" value="UserControlServlet">
@@ -85,17 +85,17 @@ body {
 
 
 
-	<nav class="cl-effect-1">
+	<nav class="cl-effect-6" >
 
-		<a href="post-jokes.jsp"> Post </a> 
+		<a href="post-jokes.jsp"style="color:#FF1493" > Post </a> 
 		<a
-			href="${loadFriendsLink}">Friends</a> 
+			href="${loadFriendsLink}" style="color:#FF1493">Friends</a> 
 			
-			<a href="${loadJokesLink}">
+			<a href="${loadJokesLink }"style="color:#FF1493" >
 			My Favorites</a>
-<a href="homepage.jsp">Home</a>
+<a href="homepage.jsp"style="color:#FF1493">Home</a>
 
-	
+	</nav>
 	
 	</body>
 	</html>
