@@ -126,7 +126,12 @@ public class UserControlServlet extends HttpServlet {
 			case "updateReview":
 				updateCurrentUserReview(request,response);
 				break;
-			
+			case "task1":
+				task_1(request,response);
+				break;
+			case "loadAdminPage":
+				listUsers(request,response);
+				break;
 			default:
 				out.println("404");
 			}
@@ -138,6 +143,22 @@ public class UserControlServlet extends HttpServlet {
 	}
 
 	
+	private void task_1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String TagX = request.getParameter("TagX");
+		String TagY = request.getParameter("TagY");
+		try {
+			ArrayList<Users> userListFunc1 = userDAO.task_1(TagX,TagY);
+			request.setAttribute("userListFunc1", userListFunc1);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+	}
+
 	private void logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		session.invalidate();
@@ -415,6 +436,10 @@ public class UserControlServlet extends HttpServlet {
 			else if(warning.equalsIgnoreCase("You cannot write more than one review to the same joke")){
 				request.setAttribute("warning3", warning);
 			}
+			else if(warning.equalsIgnoreCase("Sorry, self-reviewing is not supported")){
+				request.setAttribute("warning4", warning);
+			};
+			
 			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
@@ -529,7 +554,7 @@ public class UserControlServlet extends HttpServlet {
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String birthday = request.getParameter("birthday");
-
+		String gender = request.getParameter("gender");
 		String[] allAttributes = { account, password, address, firstName, lastName, birthday };
 //		boolean isFieldEmpty =	checkNullPointer(allAttributes);
 //			if(isFieldEmpty) {
@@ -550,7 +575,7 @@ public class UserControlServlet extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("guest-signup.jsp");
 			dispatcher.forward(request, response);
 		} else {
-			successfullyRegistered = userDAO.getRegisterted(account, password, address, firstName, lastName, birthday);
+			successfullyRegistered = userDAO.getRegisterted(account, password, address, firstName, lastName, birthday,gender);
 			// create a new user tuple, we need to direct him or her to the homepage.
 			if (successfullyRegistered) {
 				Users newUser = userDAO.getUsers(account, password);
@@ -606,7 +631,8 @@ public class UserControlServlet extends HttpServlet {
 	private void listUsers(HttpServletRequest request, HttpServletResponse response)
 			throws SQLException, ServletException, IOException {
 		List<Users> allUsers = userDAO.getUserList();
-
+		HttpSession session = request.getSession(true);
+		session.setAttribute("id", 10000);
 		request.setAttribute("USER_LIST", allUsers);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Administrator.jsp");
 		dispatcher.forward(request, response);

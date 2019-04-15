@@ -79,7 +79,7 @@
 	
 	<font size="6" color="red"> 
 			Warning! You cannot post more than five Jokes per day</font>
-	</c:if>
+	</c:if> 
 
 
 	

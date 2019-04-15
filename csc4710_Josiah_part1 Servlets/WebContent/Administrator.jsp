@@ -40,30 +40,23 @@ body {
 }
 </style>
 
-
-
-
-
-     
-
-
-
-
-
-
 <h2 class="glow">Josiah's User Management System </h2>
 <c:url var="logoutLink" value ="UserControlServlet">
 	
 	<c:param name="action" value = "logout"/>
 	
 	</c:url>
+	
+
 
 	<nav class="cl-effect-13">
 		<div id="right">
 			<a href= "${logoutLink }"> Log Out</a>
 		</div>
 	</nav>
+	
 
+	
 </head>
 
 <%
@@ -82,11 +75,14 @@ body {
 				<div id="content">
 
 					<table>
+                      
 
 						<tr>
+							<th>Name </th>
 							<th>Account</th>
 							<th>Address</th>
 							<th>Age</th>
+							<th>Gender</th>
 							<th>Status</th>
 
 						</tr>
@@ -96,10 +92,13 @@ body {
 						%>
 
 						<tr>
+						<td> <%=temp.getFirstName()  %> <%=temp.getLastName() %> </td>
 							<td><%=temp.getAccount()%></td>
 							<td><%=temp.getAddress()%></td>
 							<td><%=temp.getAge()%></td>
+							<td><%=temp.getGender() %></td>
 							<td><%= temp.getStatus()%></td>
+							
 							<%
 								}
 							%>
@@ -112,7 +111,10 @@ body {
 					</c:url>
 					</br>
 					</br>
+					<nav class="cl-effect-17">
+					<a href="DataManagement.jsp"> Data  </a>
 					<a href = "${tempLink}">Initialize</a>
+					</nav>
 					 </form>
 					 
 					 

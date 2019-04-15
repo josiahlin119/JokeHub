@@ -163,6 +163,12 @@ h4 {
 	<font size="3" color="blue"> 
 			 You have already reviewed this joke</font>
 	</c:if>
+	
+		<c:if test="${warning4 !=null }">
+	
+	<font size="3" color="blue"> 
+			 Sorry, writing self-review is not supported</font>
+	</c:if>
 
 
 		<div id="reviewSection">

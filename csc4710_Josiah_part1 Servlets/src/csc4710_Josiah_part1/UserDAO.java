@@ -35,6 +35,7 @@ public class UserDAO extends HttpServlet {
 	private String firstName;
 	private String lastName;
 	private String address;
+	private String gender;
 	int age;
 	private boolean status;
 
@@ -96,10 +97,11 @@ public class UserDAO extends HttpServlet {
 			address = rs.getString("address");
 			System.out.print("11111111111111age");
 			age = rs.getInt("age");
+			gender = rs.getString("gender");
 			System.out.print("22222222222222age");
 			status = rs.getBoolean("status");
 
-			admin = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age);
+			admin = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
 //			System.out.println("exit getUsers 2222222222222222222222");
 			disconnect();
 			rs.close();
@@ -123,8 +125,7 @@ public class UserDAO extends HttpServlet {
 	public Users getUsers(int id) throws SQLException {
 		try {
 			Users user = null;
-			String getAuthorName = "SELECT id,account,password, address,TIMESTAMPDIFF(YEAR,birthday,CURDATE()) AS age,status,firstName,lastName,address,\"\r\n"
-					+ "				+ \"gender FROM users WHERE id = ?;";
+			String getAuthorName = "SELECT id,account,password, address,TIMESTAMPDIFF(YEAR,birthday,CURDATE()) AS age,status,firstName,lastName,address,gender FROM users WHERE id = ?;";
 			connect_func();
 			ps = connect.prepareStatement(getAuthorName);
 			ps.setInt(1, id);
@@ -140,8 +141,8 @@ public class UserDAO extends HttpServlet {
 				address = rs.getString("address");
 				age = rs.getInt("age");
 				status = rs.getBoolean("status");
-
-				user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age);
+				gender = rs.getString("gender");
+				user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
 				return user;
 			}
 
@@ -180,13 +181,13 @@ public class UserDAO extends HttpServlet {
 			address = rs.getString("address");
 			age = rs.getInt("age");
 			status = rs.getBoolean("status");
-
+			gender= rs.getString("gender");
 //			System.out.println("exit getUsers 2222222222222222222222");
 
 			rs.close();
 			ps.close();
 			disconnect();
-			user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age);
+			user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
 			return user;
 
 		}
@@ -295,11 +296,12 @@ public class UserDAO extends HttpServlet {
 			lastName = rs.getString("lastName");
 			age = rs.getInt("age");
 			status = rs.getBoolean("status");
+			String gender = rs.getString("gender");
 			System.out.print(anotherAccount + anotherPassword + address + age + status); // use this to make sure the
 																							// data
 			// have been read from the database;
 
-			Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age);
+			Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
 			listUsers.add(newUser);
 		}
 
@@ -319,7 +321,7 @@ public class UserDAO extends HttpServlet {
 	 */
 
 	public boolean getRegisterted(String account, String password, String address, String firstName, String lastName,
-			String birthday1) throws SQLException {
+			String birthday1, String gender) throws SQLException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			Date formattedBirthday = format.parse(birthday1);
@@ -333,7 +335,7 @@ public class UserDAO extends HttpServlet {
 			// before we insert the user information into the database, let's check whether
 			// the userName already
 			// exists.
-			String InsertUsers = "INSERT INTO Users (account,password,address,firstName,lastName,birthday) values (?,?,?,?,?,?)";
+			String InsertUsers = "INSERT INTO Users (account,password,address,firstName,lastName,birthday,gender) values (?,?,?,?,?,?,?)";
 
 			// Use execute update because i dont need resultset here. I will list all tuples
 			// using listAllUsers() later.
@@ -346,6 +348,7 @@ public class UserDAO extends HttpServlet {
 			ps.setString(4, firstName);
 			ps.setString(5, lastName);
 			ps.setDate(6, birthday);
+			ps.setString(7, gender);
 			ps.executeUpdate(); // we dont need to return any value after we successfully
 			// create a new user tuple, we need to direct him or her to the homepage.
 
@@ -468,13 +471,15 @@ public class UserDAO extends HttpServlet {
 		/* Step 1 insert all joke information besides tag */
 		ps = connect.prepareStatement(InsertJoke);
 		java.util.Date today = new java.util.Date();
+		
 		java.sql.Date currentDate = convertJavaDateToSQLdate(today);
+		System.out.print("insertJokes method" + currentDate.toLocalDate());
 		ps.setDate(1, currentDate);
 		ps.setString(2, title);// use account as index
 		ps.setString(3, content);
 		ps.setString(4, description);
 		ps.setInt(5, authorId);
-
+		System.out.println("the author of the current inserting joke &&&&&&&&&&&&&&&" + authorId );
 		ps.executeUpdate();
 		disconnect();
 		ps.close();
@@ -961,13 +966,14 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 				lastName = rs.getString("lastName");
 				age = rs.getInt("age");
 				status = rs.getBoolean("status");
+				gender= rs.getString("gender");
 				System.out.print(anotherAccount + anotherPassword + address + age + status); // use this to make sure
 																								// the
 																								// data
 				// have been read from the database;
 
 				Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status,
-						age);
+						age,gender);
 
 				System.out.print(newUser.getAccount() + newUser.getAddress());
 				listFriends.add(newUser);
@@ -1116,6 +1122,38 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 		}
 		return false;
 
+	}
+
+	public ArrayList<Users> task_1(String tagX, String tagY) throws SQLException {
+		connect_func();
+		ArrayList<Users> listUsers = new ArrayList<Users>();
+		String sql = "select  users.*, count(*) as total from users,jokes where jokes.author_id = users.id AND jokes.id IN(" + 
+				"select joke_id from joke_tags where tag_id in (select id from tags where tag_name in (?)) union " + 
+				"select joke_id from joke_tags where tag_id in  (select id from tags where tag_name in (?)) ) GROUP BY  author_id, create_at Having total >=2;";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, tagX);
+		ps.setString(2, tagY);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			String gender = rs.getString("gender");
+			status = rs.getBoolean("status");
+			gender= rs.getString("gender");
+			Users user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status,age, gender);
+			listUsers.add(user);
+			return listUsers;
+			
+			
+			
+		}
+		return null;
+		
 	}
 
 	
