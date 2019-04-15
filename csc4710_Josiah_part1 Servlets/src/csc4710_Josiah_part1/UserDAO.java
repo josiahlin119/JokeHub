@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 //import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,7 +103,7 @@ public class UserDAO extends HttpServlet {
 			System.out.print("22222222222222age");
 			status = rs.getBoolean("status");
 
-			admin = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+			admin = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age, gender);
 //			System.out.println("exit getUsers 2222222222222222222222");
 			disconnect();
 			rs.close();
@@ -142,7 +144,8 @@ public class UserDAO extends HttpServlet {
 				age = rs.getInt("age");
 				status = rs.getBoolean("status");
 				gender = rs.getString("gender");
-				user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+				user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,
+						gender);
 				return user;
 			}
 
@@ -181,13 +184,13 @@ public class UserDAO extends HttpServlet {
 			address = rs.getString("address");
 			age = rs.getInt("age");
 			status = rs.getBoolean("status");
-			gender= rs.getString("gender");
+			gender = rs.getString("gender");
 //			System.out.println("exit getUsers 2222222222222222222222");
 
 			rs.close();
 			ps.close();
 			disconnect();
-			user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+			user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age, gender);
 			return user;
 
 		}
@@ -243,7 +246,7 @@ public class UserDAO extends HttpServlet {
 			String follow = "create table follow(" + "follower_id int(10) not null," + "followee_id int(10) not null,"
 					+ "create_at timestamp default now()," + "foreign key (follower_id) references users(id),"
 					+ "foreign key(followee_id) references users(id)," + "primary key(follower_id, followee_id)" + ");";
-		
+
 			String InsertTags = "insert into tags (tag_name) values('Tantalizing'),('fantastic');";
 			String InsertJoke_tags = "Insert into joke_tags(joke_id, tag_id) values(1,1),(1,2), (4,2),(2,2);";
 
@@ -251,8 +254,7 @@ public class UserDAO extends HttpServlet {
 					+ "('jjj@gmail.com','pass1234','Yosaf','GG','27233','1997-01-10'),('111@gmail.com','pass1234','Michael','Sun','23333','1997-01-11'),('iiij@gmail.com','pass1234','Muma','Grant','2222233','1997-01-12');";
 			String insertAdmin = "INSERT INTO administrator(account,password,address)values('Josiah','1119','2333');";
 			String insertJokes = "insert into Jokes (title,content,Description,author_ID,create_at) values ('LLddL','ddd','eee',1,curdate()),('LddssssLL','ddd','eee',1,curdate()),('LLdsssdL','ddd','eee',1,curdate()),('LssssLL','ddd','eee',1,curdate()),('LfdsfsdLL','ddd','eee',1,curdate()),('LfdddsfsdLL','dsdd','eese',1,curdate())";
-			
-			
+
 			/*
 			 * I take three steps 1. delete all tables if they exist 2. recreate those
 			 * tables with specified attributes 3. I insert sample tuples which needed to be
@@ -266,7 +268,7 @@ public class UserDAO extends HttpServlet {
 				// using listAllUsers() later.
 				// ps.close();
 			}
-			
+
 			statement.close();
 			disconnect();
 		} catch (SQLException e) {
@@ -301,7 +303,8 @@ public class UserDAO extends HttpServlet {
 																							// data
 			// have been read from the database;
 
-			Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+			Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,
+					gender);
 			listUsers.add(newUser);
 		}
 
@@ -447,7 +450,7 @@ public class UserDAO extends HttpServlet {
 			connect_func();
 
 			String pair = "insert into joke_tags (joke_id, tag_id) values(?,?);";
-			
+
 			for (int tagId : idsOfTagInserted) {
 				PreparedStatement ps = connect.prepareStatement(pair);
 				ps.setInt(1, idOfJokeInserted);
@@ -471,7 +474,7 @@ public class UserDAO extends HttpServlet {
 		/* Step 1 insert all joke information besides tag */
 		ps = connect.prepareStatement(InsertJoke);
 		java.util.Date today = new java.util.Date();
-		
+
 		java.sql.Date currentDate = convertJavaDateToSQLdate(today);
 		System.out.print("insertJokes method" + currentDate.toLocalDate());
 		ps.setDate(1, currentDate);
@@ -479,14 +482,14 @@ public class UserDAO extends HttpServlet {
 		ps.setString(3, content);
 		ps.setString(4, description);
 		ps.setInt(5, authorId);
-		System.out.println("the author of the current inserting joke &&&&&&&&&&&&&&&" + authorId );
+		System.out.println("the author of the current inserting joke &&&&&&&&&&&&&&&" + authorId);
 		ps.executeUpdate();
 		disconnect();
 		ps.close();
 		// Step 2 get id of joke we just inserted.
-		
+
 		int idOfJokeInserted = viewJokeId(title);
-		
+
 		System.out.print("The id of Joke just inserted" + idOfJokeInserted);
 		/* Step 3 insert tag */
 		insertTag(tagsAfterSplit); // insert an array of tags into database. Our next step is to get their auto
@@ -503,28 +506,27 @@ public class UserDAO extends HttpServlet {
 	private int viewJokeId(String title) {
 		try {
 			connect_func();
-		String sqlRetrieveJokeId = "select * from jokes where title = ?;";
-		
-		System.out.print("The title of the joke-----------" + title);
-		
+			String sqlRetrieveJokeId = "select * from jokes where title = ?;";
+
+			System.out.print("The title of the joke-----------" + title);
+
 			PreparedStatement ps = connect.prepareStatement(sqlRetrieveJokeId);
 			ps.setString(1, title);
 			ResultSet rs = ps.executeQuery();
 			java.sql.Date create_at;
-			while(rs.next()) {
+			while (rs.next()) {
 				int jokeId = rs.getInt("id");
 				create_at = rs.getDate("create_at");
 				System.out.print("The date" + create_at);
 				System.out.print("The joke id of the joke we just inserted **************" + jokeId);
 				return jokeId;
 			}
-			
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return 0;
 	}
 
@@ -730,47 +732,41 @@ public class UserDAO extends HttpServlet {
 	 */
 
 	public void insertReview(int jokeId, int reviewerId, String rating, String comment) throws SQLException {
-		
-			connect_func();
 
-			String InsertReview = "insert into review(User_id,Joke_id,score,comment,create_at) values(?,?,?,?,?);";
-			java.util.Date today = new java.util.Date();
-			java.sql.Date currentDate = convertJavaDateToSQLdate(today);
-			/* Step 1 insert all joke information besides tag */
-			ps = connect.prepareStatement(InsertReview);
-			ps.setInt(1, reviewerId);
-			ps.setInt(2, jokeId);
-			ps.setString(3, rating);
-			ps.setString(4, comment);
-			ps.setDate(5, currentDate);
-			ps.executeUpdate();
-
-		
-
-	 
-			rs.close();
-			disconnect();
-			ps.close();
-		
-
-	}
-
-public void updateReview(int currentUserId, int jokeId, String rating,String comment) throws SQLException {
 		connect_func();
-	String updateReview ="update Review set  comment = ? , score = ? where user_id =? AND joke_id = ?;";
 
-	/* Step 1 insert all joke information besides tag */
-	ps = connect.prepareStatement(updateReview);
-	ps.setString(1, comment);
-	ps.setString(2, rating);
-	ps.setInt(3, currentUserId);
-	ps.setInt(4, jokeId);
-	ps.executeUpdate();
-	
+		String InsertReview = "insert into review(User_id,Joke_id,score,comment,create_at) values(?,?,?,?,?);";
+		java.util.Date today = new java.util.Date();
+		java.sql.Date currentDate = convertJavaDateToSQLdate(today);
+		/* Step 1 insert all joke information besides tag */
+		ps = connect.prepareStatement(InsertReview);
+		ps.setInt(1, reviewerId);
+		ps.setInt(2, jokeId);
+		ps.setString(3, rating);
+		ps.setString(4, comment);
+		ps.setDate(5, currentDate);
+		ps.executeUpdate();
+
+		rs.close();
+		disconnect();
+		ps.close();
+
 	}
-	
-	
-	
+
+	public void updateReview(int currentUserId, int jokeId, String rating, String comment) throws SQLException {
+		connect_func();
+		String updateReview = "update Review set  comment = ? , score = ? where user_id =? AND joke_id = ?;";
+
+		/* Step 1 insert all joke information besides tag */
+		ps = connect.prepareStatement(updateReview);
+		ps.setString(1, comment);
+		ps.setString(2, rating);
+		ps.setInt(3, currentUserId);
+		ps.setInt(4, jokeId);
+		ps.executeUpdate();
+
+	}
+
 	public ArrayList<Review> retrieveReviews_jokeId(int jokeId) throws SQLException {
 		try {
 
@@ -789,8 +785,8 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 				String comment = myRs.getString("comment");
 				String rating = myRs.getString("score");
 				String reviewerName = firstName + " " + lastName;
-				int commenter_id = myRs.getInt("user_id");   //this is important to find a modfiable review   
-				Review theReview = new Review(create_at, reviewerName, comment, rating, jokeId,commenter_id);
+				int commenter_id = myRs.getInt("user_id"); // this is important to find a modfiable review
+				Review theReview = new Review(create_at, reviewerName, comment, rating, jokeId, commenter_id);
 
 				allReviewsOfOneJoke.add(theReview);
 
@@ -966,14 +962,14 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 				lastName = rs.getString("lastName");
 				age = rs.getInt("age");
 				status = rs.getBoolean("status");
-				gender= rs.getString("gender");
+				gender = rs.getString("gender");
 				System.out.print(anotherAccount + anotherPassword + address + age + status); // use this to make sure
 																								// the
 																								// data
 				// have been read from the database;
 
 				Users newUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status,
-						age,gender);
+						age, gender);
 
 				System.out.print(newUser.getAccount() + newUser.getAddress());
 				listFriends.add(newUser);
@@ -1127,15 +1123,15 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 	public ArrayList<Users> task_1(String tagX, String tagY) throws SQLException {
 		connect_func();
 		ArrayList<Users> listUsers = new ArrayList<Users>();
-		String sql = "select  users.*, count(*) as total from users,jokes where jokes.author_id = users.id AND jokes.id IN(" + 
-				"select joke_id from joke_tags where tag_id in (select id from tags where tag_name in (?)) union " + 
-				"select joke_id from joke_tags where tag_id in  (select id from tags where tag_name in (?)) ) GROUP BY  author_id, create_at Having total >=2;";
+		String sql = "select  users.*, count(*) as total from users,jokes where jokes.author_id = users.id AND jokes.id IN("
+				+ "select joke_id from joke_tags where tag_id in (select id from tags where tag_name in (?)) union "
+				+ "select joke_id from joke_tags where tag_id in  (select id from tags where tag_name in (?)) ) GROUP BY  author_id, create_at Having total >=2;";
 		PreparedStatement ps = connect.prepareStatement(sql);
 		ps.setString(1, tagX);
 		ps.setString(2, tagY);
 		ResultSet rs = ps.executeQuery();
-		while(rs.next()) {
-			
+		while (rs.next()) {
+
 			id = rs.getInt("id");
 			anotherAccount = rs.getString("account");
 			anotherPassword = rs.getString("password");
@@ -1144,21 +1140,331 @@ public void updateReview(int currentUserId, int jokeId, String rating,String com
 			address = rs.getString("address");
 			String gender = rs.getString("gender");
 			status = rs.getBoolean("status");
-			gender= rs.getString("gender");
-			Users user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status,age, gender);
+			gender = rs.getString("gender");
+			Users user = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,
+					gender);
 			listUsers.add(user);
-			return listUsers;
 			
-			
-			
+
 		}
-		return null;
+		rs.close();
+		ps.close();
+		disconnect();
+		return listUsers;
+
+	}
+
+	public ArrayList<Jokes> task_2(String account) throws SQLException {
+		connect_func();
+		ArrayList<Jokes> listJokes = new ArrayList<>();
+		String sql = " select J.*,U.firstName, U.lastName,U.account from Jokes J,Review R, Users U where U.id = J.author_id AND  J.id = R.joke_id AND U.account = ? AND J.id  not in (( (select J.id from jokes J, review R where J.id = R.Joke_id AND R.score = 'Poor') "
+				+ " union " + " (select J.id from jokes J, review R where J.id = R.Joke_id AND R.score = 'Fair') ) "
+				+ " union " + " ( select J.id from jokes J where J.id not in(select Joke_id from review))) ;";
+		PreparedStatement ps = connect.prepareStatement(sql);
+		ps.setString(1, account);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			java.sql.Date create_at = rs.getDate("create_at");
+			int jokeId = rs.getInt("id");
+			int author_id = rs.getInt("author_id");
+			String title = rs.getString("title");
+			String content = rs.getString("content");
+			String Description = rs.getString("Description");
+			String firstName = rs.getString("firstName");
+			String lastName = rs.getString("lastName");
+			String authorName = firstName.concat(" " + lastName);
+			Jokes newJoke = new Jokes(jokeId, author_id, authorName, title, content, Description, create_at);
+			listJokes.add(newJoke);
+
+		}
+		rs.close();
+		ps.close();
+		disconnect();
+		return listJokes;
+		
 		
 	}
 
+	public ArrayList<Users> task_3() throws SQLException {
+		connect_func();
+		ArrayList<Users> userListAndCount = new ArrayList<>();
+		String sql = "select  U.*,count(author_ID) AS numberOfJokes from Jokes, Users U " + 
+				"where author_ID = U.id " + 
+				" Group by author_ID " + 
+				" HAVING numberOfJokes= (select count(author_ID) as l from Jokes " + 
+				" where create_at >= '2018-03-01' " + 
+				" Group by author_ID order by l DESC limit 1  )";
+		
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		if (rs.next()) {
+
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			java.sql.Date birthday = rs.getDate("birthday");
+			LocalDate now = LocalDate.now();
+			Period diff = Period.between(birthday.toLocalDate(), now);
+			age = diff.getYears();
+			status = rs.getBoolean("status");
+			gender = rs.getString("gender");
+			int numberOfJokes = rs.getInt("numberOfJokes");
+		Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender,numberOfJokes);
+		   //this is a wild type with one integer and one object
+		userListAndCount.add(theUser);
+		
+		}
+		return userListAndCount;
+		
+	}
+
+
+
+	public ArrayList<Users> task_4(String userX, String userY) throws SQLException {
+		connect_func();
+		ArrayList<Users> friends = new ArrayList<>();
+		String T1 = " create view T1 AS " + 
+				"   SELECT f1.followee_id from follow f1,Users U where f1.follower_id = U.id AND U.account = ?; ";
+		
+		String T2  =  "create view T2 as SELECT f2.followee_id from follow f2,Users u where f2.follower_id = U.id AND U.account = ? ; ";	
+		
+		String sql = "select * from users where id in " + 
+				"(SELECT DISTINCT " + 
+				"	followee_id " + 
+				"FROM  T1 " + 
+				"   INNER JOIN T2 USING(followee_id));  ";
+		
+		String dropViews =  "   drop view T1,T2;";
+		
+		Statement sm = connect.createStatement();
+		Statement sm1 = connect.createStatement();
+		
+		PreparedStatement ps1 = connect.prepareStatement(T1);
+		PreparedStatement ps2 = connect.prepareStatement(T2);
+		ps1.setString(1, userX);
+		ps2.setString(1, userY);
+		ps1.executeUpdate();
+		
+		
+		ps2.executeUpdate();
+		
+		
+	ResultSet rs = 	sm1.executeQuery(sql);
+	sm.executeUpdate(dropViews);
+	// drop the views so that we can recreate ones in the next query. 
+	while (rs.next()) {
+
+		id = rs.getInt("id");
+		anotherAccount = rs.getString("account");
+		anotherPassword = rs.getString("password");
+		firstName = rs.getString("firstName");
+		lastName = rs.getString("lastName");
+		address = rs.getString("address");
+		java.sql.Date birthday = rs.getDate("birthday");
+		LocalDate now = LocalDate.now();
+		Period diff = Period.between(birthday.toLocalDate(), now);
+		age = diff.getYears();
+		status = rs.getBoolean("status");
+		gender = rs.getString("gender");
+		
+	Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+	   //this is a wild type with one integer and one object
+	friends.add(theUser);
+	
+	
+		
+	}
+	rs.close();
+	sm.close();
+	disconnect();
+	return friends;
 	
 
 	
+	}
+
+	public ArrayList<Users> task_5() throws SQLException {
+		connect_func();
+		ArrayList<Users> userList =  new ArrayList<>();
+		String sql = " select * from Users U " + 
+				"where U.id not in " + 
+				" (select author_ID " + 
+				" from review R,jokes J,users U " + 
+				" where R.Joke_id = J.id  AND score = 'Excellent' " + 
+				" group by R.Joke_id  " + 
+				" having count(*)>= 3) ;";
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		
+		while (rs.next()) {
+
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			java.sql.Date birthday = rs.getDate("birthday");
+			LocalDate now = LocalDate.now();
+			Period diff = Period.between(birthday.toLocalDate(), now);
+			age = diff.getYears();
+			status = rs.getBoolean("status");
+			gender = rs.getString("gender");
+		
+		Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+		   //this is a wild type with one integer and one object
+		userList.add(theUser);
+		
+		}
+		rs.close();
+		sm.close();
+		disconnect();
+		return userList;
+	}
+
+	public ArrayList<Users> task_6() throws SQLException {
+		connect_func();
+		ArrayList<Users> userList =  new ArrayList<>();
+		String sql = "select U.*, count(*) as num from Review R, Users U  " + 
+				"   where R.user_id = U.id AND R.user_id NOT IN(select R1.user_id from Review R1 " + 
+				"   where R1.score in('Excellent','Good','Fair')) GROUP BY U.id Having num >=0;"; 
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		
+		while (rs.next()) {
+
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			java.sql.Date birthday = rs.getDate("birthday");
+			LocalDate now = LocalDate.now();
+			Period diff = Period.between(birthday.toLocalDate(), now);
+			age = diff.getYears();
+			status = rs.getBoolean("status");
+			gender = rs.getString("gender");
+		
+		Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+		   //this is a wild type with one integer and one object
+		userList.add(theUser);
+		
+		}
+		rs.close();
+		sm.close();
+		disconnect();
+		return userList;
+	}
+
+	public ArrayList<Users> task_7() throws SQLException {
+		connect_func();
+		ArrayList<Users> userList =  new ArrayList<>();
+		String sql = " select U.*, count(*) as num from Review R, Users U " + 
+				"   where R.user_id = U.id AND R.user_id NOT IN(select R1.user_id from Review R1 " + 
+				"   where R1.score in('Excellent','Good','Fair')) GROUP BY U.id Having num >=0;" ; 
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		
+		while (rs.next()) {
+
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			java.sql.Date birthday = rs.getDate("birthday");
+			LocalDate now = LocalDate.now();
+			Period diff = Period.between(birthday.toLocalDate(), now);
+			age = diff.getYears();
+			status = rs.getBoolean("status");
+			gender = rs.getString("gender");
+		
+		Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+		   //this is a wild type with one integer and one object
+		userList.add(theUser);
+		
+		}
+		rs.close();
+		sm.close();
+		disconnect();
+		return userList;
+	
+		
+	}
+
+	public ArrayList<Users> task_8() throws SQLException {
+		connect_func();
+		ArrayList<Users> userList =  new ArrayList<>();
+		String sql = "  select * from Users where id in ( select J.author_Id from review R, jokes J where R.joke_id = J.id "
+				+ " AND R.joke_id not in  ( select R.joke_id from review R where R.score = 'Poor'));" ; 
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		
+		while (rs.next()) {
+
+			id = rs.getInt("id");
+			anotherAccount = rs.getString("account");
+			anotherPassword = rs.getString("password");
+			firstName = rs.getString("firstName");
+			lastName = rs.getString("lastName");
+			address = rs.getString("address");
+			java.sql.Date birthday = rs.getDate("birthday");
+			LocalDate now = LocalDate.now();
+			Period diff = Period.between(birthday.toLocalDate(), now);
+			age = diff.getYears();
+			status = rs.getBoolean("status");
+			gender = rs.getString("gender");
+		
+		Users theUser = new Users(id, anotherAccount, anotherPassword, firstName, lastName, address, status, age,gender);
+		   //this is a wild type with one integer and one object
+		userList.add(theUser);
+		
+		}
+		rs.close();
+		sm.close();
+		disconnect();
+		return userList;
+	
+	}
+
+	public ArrayList<cheaterPair> task_9() throws SQLException {
+		connect_func();
+		ArrayList<cheaterPair> pair =  new ArrayList<>();
+		
+		String C1 = "create view C1 AS select U.id as commenterId1, count(*) as L1, j.author_id from Users U, Review R, Jokes J  where U.id = R.user_id AND R.joke_id = J.id AND score = \"Excellent\" group by R.user_id, J.author_id;";
+		String C2 = "create view C2 AS select U.id as commenterId2, count(*) as L2, j.author_id from Users U, Review R, Jokes J where U.id = R.user_id AND R.joke_id = J.id group by R.user_id, J.author_id;";
+		String G1 = "create view G1 AS select commenterId1, C1.author_id from C1, C2 where C1.commenterId1 = C2.commenterId2 AND  C1.author_id = C2.author_Id AND L1 = L2;";
+		String G2 = "create view G2 AS select commenterId1, C1.author_id from C1, C2 where C1.commenterId1 = C2.commenterId2 AND  C1.author_id = C2.author_Id AND L1 = L2;";
+		
+		String sql = " select  U.account as cheaterA, U2.account as cheaterB from G1, G2, Users U, Users U2 WHERE U.id = G1.commenterId1 AND U2.id = G2.commenterId1 AND G1.commenterId1 = G2.author_id AND G1.author_id = G2.commenterId1;";
+		sm = connect.createStatement();
+		ResultSet rs = sm.executeQuery(sql);
+		
+		
+		while (rs.next()) {
+
+			String cheaterA = rs.getString("cheaterA");
+			String cheaterB = rs.getString("cheaterB");
+			cheaterPair newPair = new cheaterPair(cheaterA, cheaterB);
+			pair.add(newPair);
+	
+		
+		   //this is a wild type with one integer and one object
+	
+		
+		}
+		rs.close();
+		sm.close();
+		disconnect();
+		return pair;
+	}
+		
+
 }
 
 //select * from likes where user_id = 1 AND joke_id =1;

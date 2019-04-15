@@ -50,16 +50,31 @@
 								
 								 Create a safe password <input
 								type="password" name="password" required/>
+								
+								
+								
 								<!---->
-								 <br /> <br />
+								 <br />
+								 
+								  <br />
+								 
+								
+								 Retype your password <input
+								type="password" name="password2" required/>
+								  <br/>
+								  <br/>
 								<input type="submit" value="Sign up" class="save" /> <br />
 								<br />
 						</form>
 						<div style="clear: both;"></div>
 						<p>
 						<h3>
-						
-						
+							
+							<c:if test="${unmatchedPassword ==1}">
+							<%out.print("the passwords you entered are not matched"); %>
+							</c:if>
+							
+							
 							<c:if test="${user !=null }">You already have an account, Go to sign in 
 						
 						<input type="button" value="Sign In" 

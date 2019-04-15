@@ -76,8 +76,8 @@ public class UserControlServlet extends HttpServlet {
 				login(request, response);
 				System.out.println("This is Login");
 				break;
-			case"logout":
-				logout(request,response);
+			case "logout":
+				logout(request, response);
 				break;
 			case "initialize":
 				initialize(request, response);
@@ -121,16 +121,41 @@ public class UserControlServlet extends HttpServlet {
 				loadJokes(request, response);
 				break;
 			case "loadCurrentUserReview":
-				retrieveReviewByCurrentUser(request,response);
-			break;
+				retrieveReviewByCurrentUser(request, response);
+				break;
 			case "updateReview":
-				updateCurrentUserReview(request,response);
+				updateCurrentUserReview(request, response);
+				break;
+
+			case "loadAdminPage":
+				listUsers(request, response);
 				break;
 			case "task1":
-				task_1(request,response);
+				task_1(request, response);
 				break;
-			case "loadAdminPage":
-				listUsers(request,response);
+			case "task2":
+				task_2(request, response);
+				break;
+			case "task3":
+				task_3(request, response);
+				break;
+			case "task4":
+				task_4(request, response);
+				break;
+			case "task5":
+				task_5 (request,response);
+				break;
+			case "task6":
+				task_6(request,response);
+				break;
+			case "task7":
+				task_7(request,response);
+				break;
+			case "task8":
+				task_8(request,response);
+				break;
+			case "task9":
+				task_9(request,response);
 				break;
 			default:
 				out.println("404");
@@ -143,20 +168,144 @@ public class UserControlServlet extends HttpServlet {
 	}
 
 	
+
+	private void task_9(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<cheaterPair> userList = userDAO.task_9();
+			
+			request.setAttribute("userListTask9", userList);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	private void task_8(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<Users> userList = userDAO.task_8();
+			
+			request.setAttribute("userListTask8", userList);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	private void task_7(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<Users> userList = userDAO.task_7();
+			
+			request.setAttribute("userListTask7", userList);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	private void task_6(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<Users> userList = userDAO.task_6();
+			
+			request.setAttribute("userListTask6", userList);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	private void task_5(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<Users> userList = userDAO.task_5();
+			
+			request.setAttribute("userListTask5", userList);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+		
+	}
+
+	private void task_4(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String UserX = request.getParameter("UserX");
+			String UserY = request.getParameter("UserY");
+			ArrayList<Users> friends = new ArrayList<>();
+			friends = userDAO.task_4(UserX, UserY);
+			request.setAttribute("UserListTask4", friends);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	private void task_3(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ArrayList<Users> userListAndCount = userDAO.task_3();
+			
+			request.setAttribute("userListAndCountTask3", userListAndCount);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+			dispatcher.forward(request, response);
+
+		} catch (SQLException | ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	private void task_2(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		String account = request.getParameter("UserX");
+		ArrayList<Jokes> jokeListTask2 = userDAO.task_2(account);
+		request.setAttribute("jokeListTask2", jokeListTask2);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+		try {
+			dispatcher.forward(request, response);
+		} catch (ServletException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	private void task_1(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String TagX = request.getParameter("TagX");
 		String TagY = request.getParameter("TagY");
 		try {
-			ArrayList<Users> userListFunc1 = userDAO.task_1(TagX,TagY);
+			ArrayList<Users> userListFunc1 = userDAO.task_1(TagX, TagY);
 			request.setAttribute("userListFunc1", userListFunc1);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
 			dispatcher.forward(request, response);
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+
 	}
 
 	private void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -168,7 +317,7 @@ public class UserControlServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void deleteFavoriteJoke(HttpServletRequest request, HttpServletResponse response) {
@@ -189,8 +338,7 @@ public class UserControlServlet extends HttpServlet {
 			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -213,8 +361,7 @@ public class UserControlServlet extends HttpServlet {
 			}
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -265,7 +412,7 @@ public class UserControlServlet extends HttpServlet {
 				RequestDispatcher dispatcher = request.getRequestDispatcher("/see-user-profile.jsp");
 				dispatcher.forward(request, response);
 			}
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -323,8 +470,8 @@ public class UserControlServlet extends HttpServlet {
 			Jokes theJoke = userDAO.retrieveJoke_id(jokeId);
 			request.getSession().setAttribute("joke", theJoke);
 			/* Step 2 retrieve all the reviews about this joke and load */
-			
-			ArrayList<Review> allReviewOfThisJoke = loadReviews(jokeId);     //  The review has userId information  
+
+			ArrayList<Review> allReviewOfThisJoke = loadReviews(jokeId); // The review has userId information
 			request.getSession().setAttribute("reviews", allReviewOfThisJoke);
 
 			// Step 3 after this, i need to check whether the joke is in the user's favorite
@@ -346,67 +493,61 @@ public class UserControlServlet extends HttpServlet {
 
 	}
 
-
 	private void updateCurrentUserReview(HttpServletRequest request, HttpServletResponse response) {
-	
-		 int currentUserId = (int) request.getSession().getAttribute("id");
-		 int jokeId = Integer.parseInt(request.getParameter("jokeId"));
-		 String rating = request.getParameter("rating");
-			String comment = request.getParameter("comment");
-		 try {
-			userDAO.updateReview(currentUserId,jokeId,rating, comment);
-			
+
+		int currentUserId = (int) request.getSession().getAttribute("id");
+		int jokeId = Integer.parseInt(request.getParameter("jokeId"));
+		String rating = request.getParameter("rating");
+		String comment = request.getParameter("comment");
+		try {
+			userDAO.updateReview(currentUserId, jokeId, rating, comment);
+
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
-		 //call load joke to reload the review joke page with updated review
-		 loadJoke(request,response);
-		 
-		 
+		// call load joke to reload the review joke page with updated review
+		loadJoke(request, response);
+
 	}
 
 	private void retrieveReviewByCurrentUser(HttpServletRequest request, HttpServletResponse response) {
-	 int currentUserId = (int) request.getSession().getAttribute("id");
-	 int jokeId = Integer.parseInt(request.getParameter("jokeId"));
-	 
-	 System.out.print("currentUser REview 1111111111111111111");
-	 ArrayList<Review> allReviewsOfThisJoke = loadReviews(jokeId);
-	 //Find current user's single review
-	 Review currentUserReview;
-	 
-	 for(Review r: allReviewsOfThisJoke) {
-		 if(r.getCommenter_id() == currentUserId) {
-			 currentUserReview = r;
-			 request.setAttribute("currentUserReview", currentUserReview);
-			 System.out.print("currentUser REview 22222222222222222");
-			 RequestDispatcher dispatcher = request.getRequestDispatcher("ModifyReview.jsp");
-			
-			 try {
-				dispatcher.forward(request, response);
-			} catch (ServletException e) {
-			
-				e.printStackTrace();
-			} catch (IOException e) {
-			
-				e.printStackTrace();
+		int currentUserId = (int) request.getSession().getAttribute("id");
+		int jokeId = Integer.parseInt(request.getParameter("jokeId"));
+
+		System.out.print("currentUser REview 1111111111111111111");
+		ArrayList<Review> allReviewsOfThisJoke = loadReviews(jokeId);
+		// Find current user's single review
+		Review currentUserReview;
+
+		for (Review r : allReviewsOfThisJoke) {
+			if (r.getCommenter_id() == currentUserId) {
+				currentUserReview = r;
+				request.setAttribute("currentUserReview", currentUserReview);
+				System.out.print("currentUser REview 22222222222222222");
+				RequestDispatcher dispatcher = request.getRequestDispatcher("ModifyReview.jsp");
+
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException e) {
+
+					e.printStackTrace();
+				} catch (IOException e) {
+
+					e.printStackTrace();
+				}
+
 			}
-			 
-		 }
-	 }
-	 
-	
-	 
-	 
-		
+		}
+
 	}
 
 	private ArrayList<Review> loadReviews(int jokeId) {
 		ArrayList<Review> allReviewsOfThisJoke = new ArrayList<>();
 		try {
-			allReviewsOfThisJoke = userDAO.retrieveReviews_jokeId(jokeId);   // i need to provide a modification button for the current user 
-			// to modify his or her previous review.  
-			
+			allReviewsOfThisJoke = userDAO.retrieveReviews_jokeId(jokeId); // i need to provide a modification button
+																			// for the current user
+			// to modify his or her previous review.
 
 		} catch (SQLException e) {
 
@@ -415,32 +556,29 @@ public class UserControlServlet extends HttpServlet {
 		return allReviewsOfThisJoke;
 
 	}
-	
 
-	private void reviewJokes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
+	private void reviewJokes(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
-		String rating = request.getParameter("rating");
-		String comment = request.getParameter("comment");
-		int jokeId = Integer.parseInt(request.getParameter("jokeId"));
-		int reviewerId = (int) request.getSession().getAttribute("id");
-		userDAO.insertReview(jokeId, reviewerId, rating, comment);
-		loadJoke(request,response);
-		}
-		catch(SQLException e) {
+			String rating = request.getParameter("rating");
+			String comment = request.getParameter("comment");
+			int jokeId = Integer.parseInt(request.getParameter("jokeId"));
+			int reviewerId = (int) request.getSession().getAttribute("id");
+			userDAO.insertReview(jokeId, reviewerId, rating, comment);
+			loadJoke(request, response);
+		} catch (SQLException e) {
 			String warning = e.getMessage();
-		  
+
 			System.out.print("review error:  " + warning + e.getErrorCode());
-			if(warning.equalsIgnoreCase("Cannot post more than five jokes per day") ) {
-			request.setAttribute("warning2", warning);
-			}
-			else if(warning.equalsIgnoreCase("You cannot write more than one review to the same joke")){
+			if (warning.equalsIgnoreCase("Cannot post more than five jokes per day")) {
+				request.setAttribute("warning2", warning);
+			} else if (warning.equalsIgnoreCase("You cannot write more than one review to the same joke")) {
 				request.setAttribute("warning3", warning);
-			}
-			else if(warning.equalsIgnoreCase("Sorry, self-reviewing is not supported")){
+			} else if (warning.equalsIgnoreCase("Sorry, self-reviewing is not supported")) {
 				request.setAttribute("warning4", warning);
-			};
-			
-			
+			}
+			;
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/review-jokes.jsp");
 			dispatcher.forward(request, response);
 		}
@@ -470,8 +608,8 @@ public class UserControlServlet extends HttpServlet {
 																// //
 																// controlservlet.
 			String tags = request.getParameter("tag");
-			
-			String [] tagsAfterSplit  = tags.split("#");
+
+			String[] tagsAfterSplit = tags.split("#");
 			// Step 1: Insert joke information into the database;
 			userDAO.insertJokes(authorId, title, description, content, tagsAfterSplit);
 			// Step 2: Present the joke on the homepage with date specified.
@@ -483,16 +621,14 @@ public class UserControlServlet extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/homepage.jsp");
 			dispatcher.forward(request, response);
 
-		} 
-		catch(SQLException e) {
+		} catch (SQLException e) {
 			String warning = e.getSQLState();
 			System.out.println(warning);
 			request.setAttribute("warning", warning);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/homepage.jsp");
 			dispatcher.forward(request, response);
 		}
-		
-		
+
 		catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -550,6 +686,7 @@ public class UserControlServlet extends HttpServlet {
 //			dispatcher.forward(request, response);
 		String account = request.getParameter("account");
 		String password = request.getParameter("password");
+		String password2= request.getParameter("password2");
 		String address = request.getParameter("address");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
@@ -564,6 +701,14 @@ public class UserControlServlet extends HttpServlet {
 		 * Note: registration is the opposite of sign in. If the account already exists,
 		 * we should warn the user that the account cannot be created again
 		 */
+		if(!(password.equals(password2))) {
+			request.setAttribute("unmatchedPassword", 1);
+		
+			RequestDispatcher dispatcher = request.getRequestDispatcher("guest-signup.jsp");
+			dispatcher.forward(request, response);
+		}
+		
+		
 		Users user = userDAO.getUsers(account, password);
 		Users admin = userDAO.getAdmin(account, password);
 		if (user != null) {
@@ -575,7 +720,8 @@ public class UserControlServlet extends HttpServlet {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("guest-signup.jsp");
 			dispatcher.forward(request, response);
 		} else {
-			successfullyRegistered = userDAO.getRegisterted(account, password, address, firstName, lastName, birthday,gender);
+			successfullyRegistered = userDAO.getRegisterted(account, password, address, firstName, lastName, birthday,
+					gender);
 			// create a new user tuple, we need to direct him or her to the homepage.
 			if (successfullyRegistered) {
 				Users newUser = userDAO.getUsers(account, password);
@@ -633,9 +779,33 @@ public class UserControlServlet extends HttpServlet {
 		List<Users> allUsers = userDAO.getUserList();
 		HttpSession session = request.getSession(true);
 		session.setAttribute("id", 10000);
-		request.setAttribute("USER_LIST", allUsers);
+		session.setAttribute("USER_LIST", allUsers);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/Administrator.jsp");
 		dispatcher.forward(request, response);
 	}
+	
+	/* this is not useful, we can just set user_list as a session attribute so before the session expires, all pages we 
+	 * 
+	 * visited can use the user_list attribute*/
+//	private void listUsersToDM(HttpServletRequest request, HttpServletResponse response)  {
+//		try {
+//		
+//		List<Users> allUsers = userDAO.getUserList();
+//		HttpSession session = request.getSession(true);
+//		session.setAttribute("id", 10000);
+//		
+//		RequestDispatcher dispatcher = request.getRequestDispatcher("/DataManagement.jsp");
+//		
+//			dispatcher.forward(request, response);
+//		} catch (ServletException | IOException | SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		// I want to
+//				// load the user list to both administrator page and data mangement page so that
+//				// I can use drop list of all
+//				// users when the question requires.
+//	}
 
 }

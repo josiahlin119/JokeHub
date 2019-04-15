@@ -60,7 +60,7 @@ body {
 </head>
 
 <%
-	List<Users> theUsers = (List<Users>) request.getAttribute("USER_LIST");
+	List<Users> theUsers = (List<Users>) session.getAttribute("USER_LIST");
 %>
 
 <body>
@@ -109,6 +109,8 @@ body {
 					
 					
 					</c:url>
+					
+				
 					</br>
 					</br>
 					<nav class="cl-effect-17">
